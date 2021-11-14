@@ -14,15 +14,14 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.x
+          dotnet-version: 6.x
 
       - name: Run the Cake script
         uses: cake-build/cake-action@v1
         with:
           verbosity: Diagnostic
 
-# Change AutoJoin to the name of your project if you want CI artifacts
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: AutoJoin.dll
-#          path: AutoJoin/bin/Release/netstandard2.1/AutoJoin.dll
+     - uses: actions/upload-artifact@v2
+       with:
+         name: AutoJoin.dll
+         path: AutoJoin/bin/Release/netstandard2.1/AutoJoin.dll
