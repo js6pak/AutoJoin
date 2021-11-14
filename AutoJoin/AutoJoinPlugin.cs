@@ -31,7 +31,7 @@ namespace AutoJoin
 
         public override void Load()
         {
-            RequireArgument = Config.Bind("[Features]", "Require Command Line Argument", false, "Only auto join if the --auto-join command line argument is present");
+            RequireArgument = Config.Bind("Features", "Require Command Line Argument", false, "Only auto join if the --auto-join command line argument is present");
             
             Harmony.PatchAll();
         }
