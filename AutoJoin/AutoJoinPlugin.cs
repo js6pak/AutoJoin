@@ -10,7 +10,6 @@ using BepInEx.IL2CPP.Utils;
 using HarmonyLib;
 using InnerNet;
 using Reactor;
-using UnityEngine;
 
 namespace AutoJoin
 {
@@ -19,20 +18,13 @@ namespace AutoJoin
     [BepInDependency(ReactorPlugin.Id)]
     public partial class AutoJoinPlugin : BasePlugin
     {
-        public AutoJoinPlugin()
-        {
-            Instance = this;
-        }
-        
-        public static AutoJoinPlugin Instance;
-        
         public ConfigEntry<bool> RequireArgument;
         public Harmony Harmony { get; } = new(Id);
 
         public override void Load()
         {
             RequireArgument = Config.Bind("Features", "Require Command Line Argument", false, "Only auto join if the --auto-join command line argument is present");
-            
+
             Harmony.PatchAll();
         }
 
@@ -40,12 +32,13 @@ namespace AutoJoin
         public static class ConnectPatch
         {
             private static int? _code;
-            private static Coroutine _connectRoutine;
-            
+
             public static void Postfix(InnerNetClient __instance)
             {
-                if (Instance.RequireArgument.Value && !Il2CppSystem.Environment.GetCommandLineArgs().Contains("--auto-join")) return;
-                _connectRoutine ??= __instance.StartCoroutine(CoConnect());
+                if (PluginSingleton<AutoJoinPlugin>.Instance.RequireArgument.Value && !Il2CppSystem.Environment.GetCommandLineArgs().Contains("--auto-join")) return;
+                if (_code != null) return;
+
+                __instance.StartCoroutine(CoConnect());
             }
 
             private static IEnumerator CoConnect()
