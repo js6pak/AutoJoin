@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using System.Threading.Tasks;
 using BepInEx;
 using BepInEx.Configuration;
@@ -95,6 +96,12 @@ namespace AutoJoin
 
                 if (isHost)
                 {
+                    var commandLineArgs = Il2CppSystem.Environment.GetCommandLineArgs();
+                    if (commandLineArgs.Contains("--skeld")) SaveManager.GameHostOptions.MapId = 0;
+                    if (commandLineArgs.Contains("--mira")) SaveManager.GameHostOptions.MapId = 1;
+                    if (commandLineArgs.Contains("--polus")) SaveManager.GameHostOptions.MapId = 2;
+                    if (commandLineArgs.Contains("--airship")) SaveManager.GameHostOptions.MapId = 4;
+
                     AmongUsClient.Instance.GameId = 0;
                     AmongUsClient.Instance.Connect(MatchMakerModes.HostAndClient);
 
