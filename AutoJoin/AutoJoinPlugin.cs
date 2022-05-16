@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using System.Threading.Tasks;
 using BepInEx;
 using BepInEx.Configuration;
@@ -95,6 +96,31 @@ namespace AutoJoin
 
                 if (isHost)
                 {
+                    var commandLineArgs = Il2CppSystem.Environment.GetCommandLineArgs();
+                    var mapArgIdx = commandLineArgs.IndexOf("--map");
+                    if (mapArgIdx != -1 && commandLineArgs.Length > mapArgIdx + 1)
+                    {
+                        var mapName = commandLineArgs[mapArgIdx + 1];
+                        switch (mapName)
+                        {
+                            case "skeld":
+                                SaveManager.GameHostOptions.MapId = 0;
+                                break;
+                            case "mira":
+                                SaveManager.GameHostOptions.MapId = 1;
+                                break;
+                            case "polus":
+                                SaveManager.GameHostOptions.MapId = 2;
+                                break;
+                            case "airship":
+                                SaveManager.GameHostOptions.MapId = 4;
+                                break;
+                            case "submerged":
+                                SaveManager.GameHostOptions.MapId = 5;
+                                break;
+                        }
+                    }
+
                     AmongUsClient.Instance.GameId = 0;
                     AmongUsClient.Instance.Connect(MatchMakerModes.HostAndClient);
 
