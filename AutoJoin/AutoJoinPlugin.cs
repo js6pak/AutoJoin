@@ -10,6 +10,7 @@ using BepInEx.IL2CPP.Utils;
 using HarmonyLib;
 using InnerNet;
 using Reactor;
+using UnityEngine;
 
 namespace AutoJoin
 {
@@ -43,6 +44,11 @@ namespace AutoJoin
 
             private static IEnumerator CoConnect()
             {
+                while (!DestroyableSingleton<EOSManager>.Instance.HasFinishedLoginFlow() || DestroyableSingleton<AccountManager>.Instance.signInGuestOffline.IsOpen())
+                {
+                    yield return new WaitForSeconds(0.1f);
+                }
+
                 bool isHost;
                 var pipeClient = new NamedPipeClientStream(".", nameof(AutoJoin), PipeDirection.In);
 
@@ -95,22 +101,15 @@ namespace AutoJoin
 
                 if (isHost)
                 {
-                    AmongUsClient.Instance.GameId = 0;
-                    AmongUsClient.Instance.Connect(MatchMakerModes.HostAndClient, null);
-
-                    while (AmongUsClient.Instance.GameId is 0 or 32)
-                    {
-                        yield return null;
-                    }
-
+                    yield return AmongUsClient.Instance.CoCreateOnlineGame();
+                    
                     _code = AmongUsClient.Instance.GameId;
                     Logger<AutoJoinPlugin>.Info($"Hosting {GameCode.IntToGameName(_code.Value)}");
                 }
                 else
                 {
-                    AmongUsClient.Instance.GameId = _code!.Value;
                     Logger<AutoJoinPlugin>.Info($"Joining {GameCode.IntToGameName(_code.Value)}");
-                    AmongUsClient.Instance.Connect(MatchMakerModes.Client);
+                    yield return AmongUsClient.Instance.CoJoinOnlineGameFromCode(_code.Value);
                 }
             }
         }
