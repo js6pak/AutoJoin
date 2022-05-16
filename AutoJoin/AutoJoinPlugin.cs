@@ -96,7 +96,7 @@ namespace AutoJoin
                 if (isHost)
                 {
                     AmongUsClient.Instance.GameId = 0;
-                    AmongUsClient.Instance.Connect(MatchMakerModes.HostAndClient);
+                    AmongUsClient.Instance.Connect(MatchMakerModes.HostAndClient, null);
 
                     while (AmongUsClient.Instance.GameId is 0 or 32)
                     {
