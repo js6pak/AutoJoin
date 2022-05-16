@@ -89,7 +89,7 @@ namespace AutoJoin
                 }
 
                 AmongUsClient.Instance.GameMode = GameModes.OnlineGame;
-                AmongUsClient.Instance.SetEndpoint(ServerManager.Instance.OnlineNetAddress, ServerManager.Instance.OnlineNetPort);
+                AmongUsClient.Instance.SetEndpoint(ServerManager.Instance.UdpNetAddress, ServerManager.Instance.UdpNetPort);
                 AmongUsClient.Instance.MainMenuScene = "MMOnline";
                 AmongUsClient.Instance.OnlineScene = "OnlineGame";
 
